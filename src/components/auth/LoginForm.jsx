@@ -1,49 +1,56 @@
-/**
- * Login Form Component
- * 
- * Handles user authentication with email and password.
- * Simple, clean interface with proper validation and error handling.
- */
-
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoginFormData } from '@/types';
+import { toast } from 'react-hot-toast';
 
-// Validation schema
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
+export const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginTouched, setLoginTouched] = useState({ email: false, password: false });
+  const [isLoading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => void;
-  isLoading?: boolean;
-  error?: string;
-}
+  const handleloginSubmit = async (e) => {
+    e.preventDefault();
+    setLoginTouched({ email: true, password: true });
 
-export const LoginForm: React.FC<LoginFormProps> = ({ 
-  onSubmit, 
-  isLoading = false, 
-  error 
-}) => {
-  const [showPassword, setShowPassword] = React.useState(false);
+    if (!loginEmail || !loginPassword) {
+      toast.error("Please fill in all login fields.");
+      return;
+    }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema)
-  });
+    setLoading(true);
+    try {
+      const data = { email: loginEmail, password: loginPassword };
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/login`, data);
+
+      if (response.status === 200) {
+        toast.success("Login Successful");
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        navigate('/');
+      } else {
+        toast.error("Login Failed");
+      }
+    } catch (err) {
+      console.error("Login error:", err.response?.data);
+      toast.error(err.response?.data?.message || "Login Failed");
+
+      const check = err.response?.data?.message === "Please verify your email before logging in";
+      if (check) {
+        localStorage.setItem('emailForOtp', loginEmail);
+        navigate('/otp');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -55,8 +62,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email Field */}
+          <form onSubmit={handleloginSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -66,20 +72,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   type="email"
                   placeholder="Enter your email"
                   className="pl-10"
-                  {...register('email')}
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
                 />
               </div>
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
+              {loginTouched.email && !loginEmail && (
+                <p className="text-sm text-destructive">Email is required</p>
               )}
             </div>
 
-            {/* Password Field */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link 
-                  to="/forgot-password" 
+                <Link
+                  to="/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
                   Forgot password?
@@ -92,7 +98,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   className="pl-10 pr-10"
-                  {...register('password')}
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -102,34 +109,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
+              {loginTouched.password && !loginPassword && (
+                <p className="text-sm text-destructive">Password is required</p>
               )}
             </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3">
-                <p className="text-sm text-destructive">{error}</p>
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
 
-          {/* Signup Link */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="text-primary hover:underline font-medium"
               >
                 Create one

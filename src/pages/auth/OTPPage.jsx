@@ -7,15 +7,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { OTPVerification } from '@/components/auth/OTPVerification';
-import { OTPFormData } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
+import axios from 'axios';
 
-export const OTPPage: React.FC = () => {
+export const OTPPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { verifyOTP, signup } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState('');
 
   // Get email from location state
   const email = location.state?.email;
@@ -28,22 +26,25 @@ export const OTPPage: React.FC = () => {
     }
   }, [email, navigate]);
 
-  const handleSubmit = async (data: OTPFormData) => {
+  const handleSubmit = async (data) => {
     if (!email) return;
 
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await verifyOTP(email, data.otp);
-      
-      if (response.success) {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/verify-otp`, {
+        email,
+        otp: data.otp,
+      });
+
+      if (response.data.success) {
         // Redirect to home page after successful verification
         navigate('/', { replace: true });
       } else {
-        setError(response.message || 'OTP verification failed');
+        setError(response.data.message || 'OTP verification failed');
       }
-    } catch (err: any) {
+    } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during verification');
     } finally {
       setIsLoading(false);
@@ -53,12 +54,22 @@ export const OTPPage: React.FC = () => {
   const handleResendOTP = async () => {
     if (!email) return;
 
+    setIsLoading(true);
+    setError('');
+
     try {
-      // In a real app, you'd have a separate resend OTP endpoint
-      // For now, we'll simulate it
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use a dedicated resend OTP endpoint (recommended)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/resendOtp`, { email });
+
+      if (response.data.success) {
+        setError('OTP resent successfully'); // Display as success message
+      } else {
+        setError(response.data.message || 'Failed to resend OTP');
+      }
     } catch (err) {
-      setError('Failed to resend OTP');
+      setError(err.response?.data?.message || 'Failed to resend OTP');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,3 +92,5 @@ export const OTPPage: React.FC = () => {
     />
   );
 };
+
+export default OTPPage;

@@ -5,15 +5,16 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { LoginFormData } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
+import { ArrowLeft } from 'lucide-react';
+// import { useAuth } from '@/hooks/useAuth';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -25,7 +26,7 @@ export const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      const response = await login(data.email, data.password);
+      // const response = await login(data.email, data.password);
       
       if (response.success) {
         // Redirect to intended destination or home
@@ -41,10 +42,20 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
+    <div>
+    {/* Back Button */}
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition text-sm"
+            >
+              <ArrowLeft size={18} />
+              Back to Home
+            </Link>
     <LoginForm
       onSubmit={handleSubmit}
       isLoading={isLoading}
       error={error}
     />
+    </div>
   );
 };
