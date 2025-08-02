@@ -141,8 +141,8 @@ const ProfileDetails: React.FC = () => {
               </p>
 
               <div className="mt-3 flex gap-4 text-sm text-gray-600">
-                <span>📌 Posts: <strong>{totalPosts}</strong></span>
-                <span>❤️ Likes: <strong>{totalLikes}</strong></span>
+                <span>Posts: <strong>{totalPosts}</strong></span>
+                <span>Likes: <strong>{totalLikes}</strong></span>
               </div>
             </div>
 

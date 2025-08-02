@@ -222,7 +222,7 @@ const CreatePage: React.FC = () => {
         </div>
 
         {/* Portfolio Images */}
-        <div>
+        {/* <div>
           <label className="font-semibold block mb-1">Portfolio Images</label>
           <input type="file" accept="image/*" multiple onChange={handleImagesChange} />
           {imagePreviews.length > 0 && (
@@ -232,7 +232,7 @@ const CreatePage: React.FC = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Preview Link */}
         <div>

@@ -124,8 +124,8 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="mr-2 h-4 w-4" /> Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                    <Settings className="mr-2 h-4 w-4" /> Dashboard
+                  <DropdownMenuItem onClick={() => navigate('/setting')}>
+                    <Settings className="mr-2 h-4 w-4" /> Setting
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">

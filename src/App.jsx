@@ -1,4 +1,4 @@
-import { Toaster } from "./components/ui/toaster";
+import { Toaster } from 'react-hot-toast';
 // import { Toaster as Sonner } from "@/components/ui/sonner";
 // import { Toaster as Sonner } from "./components/ui/sonner";
 // import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +16,7 @@ import DetailPage from "./pages/DetailPage";
 // import Profile from "./pages/Profile";
 import ProfileDetails from "./components/ProfileDetails";
 import UpdatePortfolio from "./pages/UpdatePortfolio";
+import Setting from "./pages/Setting";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/create" element={<CreatePage />} />
             <Route path="/details/:id" element={<DetailPage />} />
             <Route path="/profile" element={<ProfileDetails />} />
+            <Route path="/setting" element={<Setting />} />
             <Route path="/update/:id" element={<UpdatePortfolio />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

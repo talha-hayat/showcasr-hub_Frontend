@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,6 +55,7 @@ export const LoginForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
+        
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
           <CardDescription className="text-center">
@@ -128,6 +129,15 @@ export const LoginForm = () => {
               >
                 Create one
               </Link>
+              <br />
+               {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition text-sm"
+        >
+          {/* <ArrowLeft size={18} /> */}
+          continue withot login
+        </Link>
             </p>
           </div>
         </CardContent>

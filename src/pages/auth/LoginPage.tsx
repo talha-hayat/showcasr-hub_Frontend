@@ -43,14 +43,7 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div>
-    {/* Back Button */}
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition text-sm"
-            >
-              <ArrowLeft size={18} />
-              Back to Home
-            </Link>
+    
     <LoginForm
       onSubmit={handleSubmit}
       isLoading={isLoading}
