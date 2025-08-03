@@ -131,6 +131,7 @@ export const HomePage = () => {
 
     try {
       // Optimistic update
+      console.log("chala")
       setPortfolios(prev =>
         prev.map(p =>
           p._id === portfolioId 

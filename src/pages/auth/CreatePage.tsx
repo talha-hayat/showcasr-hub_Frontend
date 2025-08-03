@@ -147,9 +147,9 @@ const CreatePage: React.FC = () => {
       });
 
       const data = await res.json();
-      console.log('Response:', data); // ڈیبگنگ کے لئے
 
       if (res.ok) {
+        console.log(data)
         toast.dismiss();
         toast.success('Portfolio created!');
         setTimeout(() => navigate('/'), 1000);
